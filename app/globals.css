@@ -8,8 +8,16 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Brand Colors */
+  --color-primary: #7b39fc;
+  --color-secondary: #2b2344;
+
+  /* Font Mapping */
+  --font-ui: var(--font-manrope);
+  --font-buttons: var(--font-cabin);
+  --font-headline: var(--font-instrument-serif);
+  --font-body: var(--font-inter);
 }
 
 @media (prefers-color-scheme: dark) {
