@@ -1,31 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Manrope, Cabin, Instrument_Serif } from "next/font/google";
+import { Inter, Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/lib/auth/AuthProvider";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const cabin = Cabin({
-  variable: "--font-cabin",
-  subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  weight: "400",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Bluebee - Book your perfect stay",
-  description: "Discover handpicked hotels, resorts, and stays across your favorite destinations.",
+  title: "FlowState - Adaptive Student Workload Management",
+  description: "Your workload shouldn't control your entire day. Decide what matters today based on actual capacity.",
 };
 
 export default function RootLayout({
@@ -36,9 +31,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${manrope.variable} ${cabin.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${inter.variable} ${outfit.variable} ${playfair.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-foreground font-body">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
