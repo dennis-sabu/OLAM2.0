@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { formatDuration, calculateCapacity } from "@/lib/flowstate";
 import { useFlowState } from "@/lib/FlowStateProvider";
+import { useBLECompanion } from "@/lib/bluetooth/FlowStateBLEContext";
 import { useRouter } from "next/navigation";
 
 export default function Planner() {
@@ -19,6 +20,7 @@ export default function Planner() {
     updateTask,
     recalculatePlan,
   } = useFlowState();
+  const ble = useBLECompanion();
   const router = useRouter();
 
   // Local overrides for capacity sliders (don't commit until Confirm)
@@ -83,6 +85,17 @@ export default function Planner() {
         }
       }
       recalculatePlan();
+
+      // Auto-sync confirmed plan to ESP32 physical companion if connected
+      if (ble.status === "connected") {
+        ble.syncTodayPlan(
+          plannerTasks.map((t) => (localOverrides[t.id] ? { ...t, planAction: localOverrides[t.id] } : t)),
+          { ...state, energy: localEnergy, availableTime: localTime },
+          previewCapacity,
+          plan
+        ).catch((e) => console.error("BLE auto-sync failed:", e));
+      }
+
       router.push("/app/dashboard");
     } catch (err) {
       console.error("Failed to confirm plan:", err);

@@ -7,7 +7,6 @@ import {
   BrainCircuit,
   Calendar,
   Clock,
-  BarChart3,
   Zap,
   ShieldAlert,
   Sparkles,
@@ -16,7 +15,13 @@ import {
   TrendingUp,
   Star,
   ChevronRight,
+  ShieldCheck,
+  Compass,
+  Cpu,
 } from "lucide-react";
+import InteractivePlannerDemo from "@/components/landing/InteractivePlannerDemo";
+import HardwareCompanionSection from "@/components/landing/HardwareCompanionSection";
+import FaqAccordion from "@/components/landing/FaqAccordion";
 
 export default function Home() {
   return (
@@ -35,8 +40,8 @@ export default function Home() {
 
         {/* Section label */}
         <div className="flex justify-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest">
-            The Problem
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest font-semibold">
+            The Fundamental Flaw
           </span>
         </div>
 
@@ -45,8 +50,8 @@ export default function Home() {
             Your to-do list doesn't know{" "}
             <span className="italic text-accent">your day.</span>
           </h2>
-          <p className="font-body text-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
-            Traditional task lists assume you have the exact same capacity every single day. They ignore energy, stress, sleep, and shifting time — leaving you drowning in unrealistic plans.
+          <p className="font-body text-base md:text-lg text-white/50 leading-relaxed max-w-2xl mx-auto">
+            Traditional task apps assume you have 8 hours of peak cognitive focus every day. They ignore midterm stress, poor sleep, and surprise deadlines — leaving you drowning in an anxiety-inducing backlog.
           </p>
         </div>
 
@@ -57,31 +62,42 @@ export default function Home() {
               color: "text-primary",
               bg: "bg-primary/10",
               border: "border-primary/20",
-              title: "Changing Energy",
-              desc: "Some days you're locked in. Others you're completely drained. Your plan should know the difference."
+              badge: "Fluctuating Energy",
+              title: "Energy is Variable",
+              desc: "Some days you're locked in for four hours of uninterrupted coding. Other days you're running on fumes. Your plan must scale to match your biology."
             },
             {
               icon: Clock,
               color: "text-accent",
               bg: "bg-accent/10",
               border: "border-accent/20",
-              title: "Shifting Time",
-              desc: "Unexpected events eat your hours. Static lists don't care that you just lost two hours to a family emergency."
+              badge: "Shifting Time",
+              title: "Time is Fragile",
+              desc: "Unexpected lab meetings, group project syncs, and family emergencies consume hours without warning. Static lists blindly pretend tomorrow has 30 hours."
             },
             {
               icon: ShieldAlert,
-              color: "text-reduce",
-              bg: "bg-reduce/10",
-              border: "border-reduce/20",
-              title: "Overloaded Plans",
-              desc: "Rolling 15 unfinished tasks to tomorrow creates anxiety spirals. You need a baseline that's actually achievable."
+              color: "text-amber-400",
+              bg: "bg-amber-500/10",
+              border: "border-amber-500/20",
+              badge: "The Guilt Cycle",
+              title: "Rolling Task Debt",
+              desc: "Rolling 15 unfinished tasks to tomorrow creates a chronic guilt loop. FlowState forces deterministic trade-offs: protect the essentials and drop the rest guilt-free."
             }
-          ].map(({ icon: Icon, color, bg, border, title, desc }) => (
-            <div key={title} className={`glass-card p-7 space-y-4 border ${border} group hover:scale-[1.02] transition-transform duration-300`}>
-              <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center ${color}`}>
-                <Icon className="w-6 h-6" />
+          ].map(({ icon: Icon, color, bg, border, badge, title, desc }) => (
+            <div
+              key={title}
+              className={`glass-card p-8 space-y-5 border ${border} group hover:border-white/30 hover:scale-[1.01] transition-all duration-300 relative overflow-hidden`}
+            >
+              <div className="flex items-center justify-between">
+                <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center ${color}`}>
+                  <Icon className="w-6 h-6" />
+                </div>
+                <span className="font-ui text-[11px] font-semibold text-white/40 uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/5 border border-white/5">
+                  {badge}
+                </span>
               </div>
-              <h3 className="font-ui font-semibold text-white text-lg">{title}</h3>
+              <h3 className="font-ui font-semibold text-white text-xl">{title}</h3>
               <p className="font-body text-sm text-white/50 leading-relaxed">{desc}</p>
             </div>
           ))}
@@ -92,36 +108,35 @@ export default function Home() {
       <section id="how-it-works" className="w-full max-w-6xl mx-auto px-6 py-28 relative z-10">
 
         <div className="flex justify-center mb-6">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest">
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest font-semibold">
             How It Works
           </span>
         </div>
 
         <div className="text-center space-y-4 max-w-2xl mx-auto mb-20">
-          <h2 className="font-display text-4xl md:text-5xl text-white">Four steps to a realistic day</h2>
-          <p className="font-body text-white/50">FlowState runs through a simple loop — every single day.</p>
+          <h2 className="font-display text-4xl md:text-5xl text-white font-bold">Four steps to a realistic day</h2>
+          <p className="font-body text-base text-white/50">FlowState runs through an adaptive loop — calibrated every morning in 30 seconds.</p>
         </div>
 
         {/* Step cards with connector line */}
         <div className="relative">
           {/* Connector Line */}
-          <div className="hidden md:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="hidden md:block absolute top-[52px] left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
           <div className="grid md:grid-cols-4 gap-8">
             {[
-              { step: "01", icon: MessageSquare, title: "Capture your work", desc: "Brain-dump everything weighing on you — naturally, in plain text." },
-              { step: "02", icon: Battery, title: "Log your state", desc: "Tell FlowState your energy, stress, sleep, and time. Takes 30 seconds." },
-              { step: "03", icon: BrainCircuit, title: "Get a real plan", desc: "AI structures your workload to match your human capacity for today." },
-              { step: "04", icon: TrendingUp, title: "Adapt as you go", desc: "Missed something? Recalculate instantly. Your plan bends so you don't break." },
+              { step: "01", icon: MessageSquare, title: "Natural Capture", desc: "Dump raw syllabus items or messy notes in plain English. AI auto-extracts time & urgency." },
+              { step: "02", icon: Battery, title: "State Check-In", desc: "Set energy, stress, sleep, and free hours in 20 seconds. This sets your human capacity." },
+              { step: "03", icon: BrainCircuit, title: "Engine Solves Day", desc: "Deterministic mathematical scheduling tags tasks as KEEP, REDUCE, or MOVE." },
+              { step: "04", icon: TrendingUp, title: "Focus & Complete", desc: "Execute on web or the physical desk companion. Recalculate anytime when plans change." },
             ].map(({ step, icon: Icon, title, desc }) => (
               <div key={step} className="flex flex-col items-center text-center space-y-4 relative group">
-                {/* Step Circle */}
-                <div className="w-[104px] h-[104px] rounded-2xl glass-card border border-primary/20 bg-primary/5 flex flex-col items-center justify-center gap-1 group-hover:border-primary/40 group-hover:bg-primary/10 transition-all duration-300">
-                  <Icon className="w-6 h-6 text-primary" />
-                  <span className="font-display text-xl text-primary/60">{step}</span>
+                <div className="w-[104px] h-[104px] rounded-2xl glass-card border border-primary/25 bg-primary/5 flex flex-col items-center justify-center gap-1 group-hover:border-primary/50 group-hover:bg-primary/15 transition-all duration-300 shadow-lg">
+                  <Icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+                  <span className="font-display text-xl text-primary/70 font-bold">{step}</span>
                 </div>
                 <h3 className="font-ui text-base text-white font-semibold leading-snug">{title}</h3>
-                <p className="font-body text-sm text-white/40 leading-relaxed">{desc}</p>
+                <p className="font-body text-sm text-white/45 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -132,120 +147,134 @@ export default function Home() {
       <section id="features" className="w-full max-w-6xl mx-auto px-6 py-28 space-y-20 relative z-10">
 
         <div className="flex justify-center mb-2">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest">
-            The Framework
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest font-semibold">
+            The FlowState Framework
           </span>
         </div>
 
         <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <h2 className="font-display text-4xl md:text-5xl text-white">Three intentional decisions</h2>
-          <p className="font-body text-white/50">FlowState forces you to be honest about what actually belongs in today.</p>
+          <h2 className="font-display text-4xl md:text-5xl text-white font-bold">Three intentional decisions</h2>
+          <p className="font-body text-base text-white/50">Stop looking at an undifferentiated 20-item checklist. Make clear, honest commitments.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="glass-card p-8 space-y-5 border-t-[3px] border-t-keep relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-            <div className="absolute top-4 right-4 font-display text-6xl text-keep/5 group-hover:text-keep/10 transition-colors font-bold">K</div>
-            <div className="w-12 h-12 rounded-full bg-keep/15 flex items-center justify-center text-keep">
+          <div className="glass-card p-8 space-y-5 border-t-[3px] border-t-emerald-400 relative overflow-hidden group hover:scale-[1.01] hover:border-emerald-500/40 transition-all duration-300">
+            <div className="absolute top-4 right-4 font-display text-6xl text-emerald-400/5 group-hover:text-emerald-400/10 transition-colors font-bold">K</div>
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-ui text-xs text-keep/70 uppercase tracking-widest font-bold">Keep</span>
-              <h3 className="font-ui text-2xl text-white font-semibold mt-1">Work it.</h3>
+              <span className="font-ui text-xs text-emerald-400 uppercase tracking-widest font-bold">Keep</span>
+              <h3 className="font-ui text-2xl text-white font-semibold mt-1">Full Focus</h3>
             </div>
             <p className="font-body text-white/50 text-sm leading-relaxed">
-              This task realistically fits your capacity today. Do it completely. E.g., the math assignment due tomorrow that you have 90 minutes to finish.
+              This task realistically fits your capacity today. Do it completely and without distraction. E.g., the high-stakes problem set due tomorrow at 5 PM.
             </p>
+            <div className="pt-2 border-t border-white/5 text-xs font-ui text-emerald-400/80 flex items-center gap-1.5">
+              <span>✓ Protected in your Minimum Viable Day</span>
+            </div>
           </div>
 
-          <div className="glass-card p-8 space-y-5 border-t-[3px] border-t-reduce relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-            <div className="absolute top-4 right-4 font-display text-6xl text-reduce/5 group-hover:text-reduce/10 transition-colors font-bold">R</div>
-            <div className="w-12 h-12 rounded-full bg-reduce/15 flex items-center justify-center text-reduce">
+          <div className="glass-card p-8 space-y-5 border-t-[3px] border-t-amber-400 relative overflow-hidden group hover:scale-[1.01] hover:border-amber-500/40 transition-all duration-300">
+            <div className="absolute top-4 right-4 font-display text-6xl text-amber-400/5 group-hover:text-amber-400/10 transition-colors font-bold">R</div>
+            <div className="w-12 h-12 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-400">
               <ListTodo className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-ui text-xs text-reduce/70 uppercase tracking-widest font-bold">Reduce</span>
-              <h3 className="font-ui text-2xl text-white font-semibold mt-1">Scope it.</h3>
+              <span className="font-ui text-xs text-amber-400 uppercase tracking-widest font-bold">Reduce</span>
+              <h3 className="font-ui text-2xl text-white font-semibold mt-1">Scope Down</h3>
             </div>
             <p className="font-body text-white/50 text-sm leading-relaxed">
-              Important, but do less of it today. E.g., write just the outline for a paper instead of attempting the full draft when you're running low on energy.
+              Important, but don't attempt the entire elephant today. E.g., write the thesis and outline instead of forcing a 2,000-word draft when energy is 3/10.
             </p>
+            <div className="pt-2 border-t border-white/5 text-xs font-ui text-amber-400/80 flex items-center gap-1.5">
+              <span>⚡ Prevents burnout while maintaining momentum</span>
+            </div>
           </div>
 
-          <div className="glass-card p-8 space-y-5 border-t-[3px] border-t-move relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
-            <div className="absolute top-4 right-4 font-display text-6xl text-move/5 group-hover:text-move/10 transition-colors font-bold">M</div>
-            <div className="w-12 h-12 rounded-full bg-move/15 flex items-center justify-center text-move">
+          <div className="glass-card p-8 space-y-5 border-t-[3px] border-t-indigo-400 relative overflow-hidden group hover:scale-[1.01] hover:border-indigo-500/40 transition-all duration-300">
+            <div className="absolute top-4 right-4 font-display text-6xl text-indigo-400/5 group-hover:text-indigo-400/10 transition-colors font-bold">M</div>
+            <div className="w-12 h-12 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-400">
               <Calendar className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-ui text-xs text-move/70 uppercase tracking-widest font-bold">Move</span>
-              <h3 className="font-ui text-2xl text-white font-semibold mt-1">Defer it.</h3>
+              <span className="font-ui text-xs text-indigo-400 uppercase tracking-widest font-bold">Move</span>
+              <h3 className="font-ui text-2xl text-white font-semibold mt-1">Defer Guilt-Free</h3>
             </div>
             <p className="font-body text-white/50 text-sm leading-relaxed">
-              Not today. Safely push it without guilt. E.g., reading a textbook chapter that isn't urgent when essential capacity is already used up.
+              Not today. Pushed cleanly to tomorrow or the weekend without lingering failure. E.g., textbook reading that isn't urgent when essential hours are exhausted.
             </p>
+            <div className="pt-2 border-t border-white/5 text-xs font-ui text-indigo-400/80 flex items-center gap-1.5">
+              <span>➔ Cleared from today's mental bandwidth</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── SECTION D: MINIMUM VIABLE DAY ── */}
+      {/* ── SECTION D: INTERACTIVE DEMO SIMULATOR ── */}
+      <section id="demo" className="w-full max-w-6xl mx-auto px-6 py-20 relative z-10">
+        <InteractivePlannerDemo />
+      </section>
+
+      {/* ── SECTION E: MINIMUM VIABLE DAY ── */}
       <section className="w-full max-w-6xl mx-auto px-6 py-28 relative z-10">
         <div className="grid md:grid-cols-2 gap-16 items-center">
 
           <div className="space-y-8">
             <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest mb-6">
-                Core Concept
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest font-semibold mb-6">
+                Core Philosophy
               </span>
-              <h2 className="font-display text-4xl md:text-5xl text-white leading-tight mt-4">
+              <h2 className="font-display text-4xl md:text-5xl text-white font-bold leading-tight mt-4">
                 Minimum{" "}
                 <span className="italic text-accent">Viable</span>{" "}
                 Day
               </h2>
             </div>
-            <p className="font-body text-white/50 text-lg leading-relaxed">
-              The goal isn't to complete everything. It's to identify the <strong className="text-white">smallest realistic set</strong> of important work — and protect it at all costs.
+            <p className="font-body text-white/50 text-base md:text-lg leading-relaxed">
+              The goal is never to exhaust yourself trying to finish 20 items. It is to protect the <strong className="text-white">smallest realistic core of essential work</strong> — and defend it at all costs.
             </p>
             <p className="font-body text-white/40 text-base leading-relaxed">
-              When you finish your MVD, you've had a successful day. Everything else is a bonus. This shift eliminates the guilt spiral of a traditional to-do list.
+              When your Minimum Viable Day is complete, you are officially finished. No guilt, no 1 AM anxiety spirals. Everything else completed is simply a bonus.
             </p>
             <Link
               href="/auth/sign-up"
               className="inline-flex items-center gap-2 font-ui text-primary text-sm font-semibold hover:gap-3 transition-all group"
             >
-              Build your MVD now <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Build your MVD today <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="glass-card p-8 space-y-8 relative overflow-hidden">
+          <div className="glass-card p-8 space-y-8 relative overflow-hidden border border-white/10 shadow-2xl">
             {/* Glow */}
             <div className="absolute top-[-30%] right-[-20%] w-[60%] h-[60%] rounded-full bg-primary/10 blur-[80px] pointer-events-none" />
 
             <div className="flex justify-between items-end border-b border-white/10 pb-6 relative z-10">
               <div>
-                <p className="font-ui text-xs text-white/40 uppercase tracking-wider mb-1">Today's Workload</p>
-                <p className="font-display text-3xl text-white">5h 30m</p>
+                <p className="font-ui text-xs text-white/40 uppercase tracking-wider mb-1 font-semibold">Today's Raw Workload</p>
+                <p className="font-display text-3xl font-bold text-white">5h 30m</p>
               </div>
               <div className="text-right">
-                <p className="font-ui text-xs text-white/40 uppercase tracking-wider mb-1">Your Capacity</p>
-                <p className="font-display text-3xl text-primary">3h 10m</p>
+                <p className="font-ui text-xs text-white/40 uppercase tracking-wider mb-1 font-semibold">Calculated Capacity</p>
+                <p className="font-display text-3xl font-bold text-primary">3h 10m</p>
               </div>
             </div>
 
             <div className="relative z-10">
-              <p className="font-ui text-xs font-bold text-white/40 uppercase tracking-widest mb-4">
-                ✦ Minimum Viable Day
+              <p className="font-ui text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4 flex items-center gap-1.5">
+                ✦ Minimum Viable Day (Protected Tasks)
               </p>
               <ul className="space-y-3">
                 {[
                   "Electronics assignment (90 min)",
                   "Mathematics preparation (60 min)",
-                  "Project milestone (40 min)",
+                  "Database schema milestone (40 min)",
                 ].map((task) => (
-                  <li key={task} className="flex items-center gap-3 text-white font-body">
-                    <div className="w-5 h-5 rounded-full bg-keep/20 border border-keep/40 flex items-center justify-center shrink-0">
-                      <CheckCircle2 className="w-3 h-3 text-keep" />
+                  <li key={task} className="flex items-center gap-3 text-white font-body text-sm">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                     </div>
-                    <span className="text-white/80">{task}</span>
+                    <span className="text-white/80 font-medium">{task}</span>
                   </li>
                 ))}
               </ul>
@@ -253,268 +282,159 @@ export default function Home() {
 
             <div className="relative z-10 pt-4 border-t border-white/10">
               <div className="flex items-center justify-between text-sm font-ui">
-                <span className="text-white/40">MVD Total</span>
-                <span className="text-keep font-semibold">3h 10m ✓ Fits perfectly</span>
+                <span className="text-white/40">MVD Total Time</span>
+                <span className="text-emerald-400 font-semibold">3h 10m · 100% Fits Capacity</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── SECTION E: DAILY STATE ── */}
-      <section className="w-full max-w-6xl mx-auto px-6 py-28 relative z-10">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+      {/* ── SECTION F: HARDWARE DESK COMPANION (PHASE 5) ── */}
+      <HardwareCompanionSection />
 
-          {/* State Mockup */}
-          <div className="glass-card p-8 space-y-6 order-2 md:order-1 relative overflow-hidden">
-            <div className="absolute bottom-0 left-0 w-[60%] h-[60%] rounded-full bg-primary/8 blur-[80px] pointer-events-none" />
-
-            <p className="font-ui text-xs font-bold text-white/30 uppercase tracking-widest">Today's State Check-In</p>
-
-            {[
-              { label: "Energy", value: "Low (3/10)", pct: "30%", color: "bg-reduce" },
-              { label: "Stress", value: "High (8/10)", pct: "80%", color: "bg-primary" },
-              { label: "Available Time", value: "4 hours", pct: "60%", color: "bg-white/50" },
-              { label: "Sleep", value: "5.5 hours", pct: "46%", color: "bg-move" },
-            ].map(({ label, value, pct, color }) => (
-              <div key={label} className="space-y-2">
-                <div className="flex justify-between font-ui text-sm">
-                  <span className="text-white/50">{label}</span>
-                  <span className="text-white">{value}</span>
-                </div>
-                <div className="h-2 w-full bg-white/8 rounded-full overflow-hidden">
-                  <div className={`h-full ${color} rounded-full`} style={{ width: pct }} />
-                </div>
-              </div>
-            ))}
-
-            <div className="mt-2 p-4 rounded-xl bg-primary/10 border border-primary/20 text-sm font-ui text-primary/90 leading-relaxed">
-              <strong className="text-white block mb-1">FlowState Note:</strong>
-              Your stress is high and energy is low. We're reducing scope on complex tasks and protecting your core priorities only.
-            </div>
-          </div>
-
-          <div className="space-y-8 order-1 md:order-2">
-            <div>
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest mb-6">
-                Daily State
-              </span>
-              <h2 className="font-display text-4xl md:text-5xl text-white leading-tight mt-4">
-                Planning that knows{" "}
-                <span className="italic text-accent">you're human.</span>
-              </h2>
-            </div>
-            <p className="font-body text-white/50 text-lg leading-relaxed">
-              Just four simple signals — energy, stress, available time, and sleep — tell FlowState how much you can realistically handle today.
-            </p>
-            <p className="font-body text-white/30 text-sm leading-relaxed italic">
-              * FlowState does not diagnose or detect medical or mental-health conditions. It simply uses your inputs to size your workload appropriately.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SECTION F: AI CAPTURE ── */}
+      {/* ── SECTION G: AI NATURAL LANGUAGE CAPTURE ── */}
       <section className="w-full max-w-6xl mx-auto px-6 py-28 space-y-20 relative z-10">
 
         <div className="flex justify-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest">
-            FlowAI Capture
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest font-semibold">
+            FlowAI Capture · Powered by Groq
           </span>
         </div>
 
         <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <h2 className="font-display text-4xl md:text-5xl text-white">Dump your brain. We'll organize it.</h2>
-          <p className="font-body text-white/50">Say it naturally. FlowAI extracts task structure, deadline, and priority automatically.</p>
+          <h2 className="font-display text-4xl md:text-5xl text-white font-bold">Dump your brain. We structure it.</h2>
+          <p className="font-body text-base text-white/50">No rigid forms or tedious date-pickers. Say it naturally — Groq LLaMA extracts the structure instantly.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
           {/* Input */}
-          <div className="glass-card p-6 flex gap-4 group hover:border-white/20 transition-colors">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-              <MessageSquare className="w-4 h-4 text-primary" />
+          <div className="glass-card p-7 flex gap-4 group hover:border-white/20 transition-all border border-white/10">
+            <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0 mt-0.5 text-primary">
+              <MessageSquare className="w-4 h-4" />
             </div>
-            <p className="font-body text-white/70 italic text-lg leading-relaxed">
-              "I have a Java assignment due Friday. It will take around two hours."
-            </p>
-          </div>
-
-          {/* Arrow */}
-          <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-primary/20 border border-primary/30 items-center justify-center">
-            <ArrowRight className="w-4 h-4 text-primary" />
+            <div className="space-y-2">
+              <p className="font-ui text-xs uppercase tracking-wider text-white/40 font-semibold">User Natural Voice / Text</p>
+              <p className="font-body text-white/80 italic text-lg leading-relaxed">
+                "I have a Java assignment due Friday at 5 PM. It will take around two hours and is worth 15% of my grade."
+              </p>
+            </div>
           </div>
 
           {/* Extracted Card */}
-          <div className="glass-card p-6 space-y-4 border-l-[3px] border-l-primary relative overflow-hidden">
+          <div className="glass-card p-7 space-y-4 border-l-[3px] border-l-primary relative overflow-hidden border border-white/10 shadow-xl">
             <Sparkles className="absolute top-4 right-4 w-5 h-5 text-primary/30" />
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-ui text-xs text-primary/70 uppercase tracking-widest font-bold">FlowAI Extracted</span>
+              <span className="font-ui text-xs text-primary font-bold uppercase tracking-widest">FlowAI Extracted Structure</span>
             </div>
-            <p className="font-ui text-xl text-white font-semibold">Java Assignment</p>
-            <div className="flex flex-wrap gap-2">
-              <span className="px-2.5 py-1 bg-white/5 rounded-lg text-xs font-ui text-white/60 flex items-center gap-1.5 border border-white/8">
-                <Calendar className="w-3 h-3" /> Due Friday
+            <p className="font-ui text-xl text-white font-bold">Java Assignment</p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="px-3 py-1 bg-white/5 rounded-lg text-xs font-ui text-white/70 flex items-center gap-1.5 border border-white/8">
+                <Calendar className="w-3.5 h-3.5 text-primary" /> Due Friday 17:00
               </span>
-              <span className="px-2.5 py-1 bg-white/5 rounded-lg text-xs font-ui text-white/60 flex items-center gap-1.5 border border-white/8">
-                <Clock className="w-3 h-3" /> 2 hours
+              <span className="px-3 py-1 bg-white/5 rounded-lg text-xs font-ui text-white/70 flex items-center gap-1.5 border border-white/8">
+                <Clock className="w-3.5 h-3.5 text-emerald-400" /> 120 mins
               </span>
-              <span className="px-2.5 py-1 bg-primary/15 rounded-lg text-xs font-ui text-primary flex items-center gap-1.5 border border-primary/25">
-                Medium Priority
+              <span className="px-3 py-1 bg-primary/15 rounded-lg text-xs font-ui text-primary font-semibold flex items-center gap-1.5 border border-primary/25">
+                High Priority
               </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── SECTION G: PRODUCT PREVIEW ── */}
-      <section id="demo" className="w-full max-w-6xl mx-auto px-6 py-28 space-y-12 relative z-10">
-
-        <div className="flex justify-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest">
-            Product Preview
-          </span>
-        </div>
-
-        <div className="text-center space-y-4">
-          <h2 className="font-display text-4xl md:text-5xl text-white">Your adaptive dashboard</h2>
-          <p className="font-body text-white/40">Everything you need to navigate a complex day, at a glance.</p>
-        </div>
-
-        {/* Dashboard Mockup */}
-        <div className="w-full relative rounded-2xl overflow-hidden glass-card border border-white/10 p-1 shadow-2xl">
-          {/* Window chrome */}
-          <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/8">
-            <div className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <div className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <div className="w-2.5 h-2.5 rounded-full bg-white/15" />
-            <span className="ml-3 font-ui text-xs text-white/20">FlowState — Dashboard</span>
-          </div>
-
-          <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Stats */}
-            <div className="space-y-4">
-              <div className="bg-black/40 rounded-xl p-5 border border-white/5 space-y-1">
-                <p className="font-ui text-xs text-white/40 uppercase tracking-wider">Capacity</p>
-                <p className="font-display text-3xl text-primary">3h 10m</p>
-              </div>
-              <div className="bg-black/40 rounded-xl p-5 border border-white/5 space-y-1">
-                <p className="font-ui text-xs text-white/40 uppercase tracking-wider">Workload</p>
-                <p className="font-display text-3xl text-white">5h 30m</p>
-              </div>
-              <div className="bg-reduce/8 rounded-xl p-5 border border-reduce/20 space-y-1">
-                <p className="font-ui text-xs text-reduce/60 uppercase tracking-wider">Overload</p>
-                <p className="font-display text-3xl text-reduce">+2h 20m</p>
-              </div>
-              <div className="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-keep animate-pulse" />
-                <span className="font-ui text-xs text-white/50">Energy: 7/10 · Stress: 4/10</span>
-              </div>
-            </div>
-
-            {/* Main Plan */}
-            <div className="col-span-2 bg-black/20 rounded-xl p-6 border border-white/5">
-              <h3 className="font-ui text-base text-white font-medium mb-6 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-primary" /> Today's Adaptive Plan
-              </h3>
-              <div className="space-y-3">
-                {[
-                  { name: "Mathematics prep", tag: "KEEP", tagClass: "bg-keep/15 text-keep border-keep/25", dim: false },
-                  { name: "Electronics assignment", tag: "KEEP", tagClass: "bg-keep/15 text-keep border-keep/25", dim: false },
-                  { name: "Project milestone", tag: "REDUCE", tagClass: "bg-reduce/15 text-reduce border-reduce/25", dim: false },
-                  { name: "Java assignment (Ch. 4)", tag: "MOVE", tagClass: "bg-move/15 text-move border-move/25", dim: true },
-                ].map(({ name, tag, tagClass, dim }) => (
-                  <div
-                    key={name}
-                    className={`flex items-center justify-between p-4 rounded-xl bg-white/3 border border-white/5 transition-opacity ${dim ? "opacity-40" : ""}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-1.5 h-1.5 rounded-full ${tag === "KEEP" ? "bg-keep" : tag === "REDUCE" ? "bg-reduce" : "bg-move"}`} />
-                      <span className="font-body text-white text-sm">{name}</span>
-                    </div>
-                    <span className={`px-3 py-1 rounded-lg text-xs font-bold border ${tagClass}`}>{tag}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SECTION H: TESTIMONIALS / SOCIAL PROOF ── */}
+      {/* ── SECTION H: TESTIMONIALS ── */}
       <section className="w-full max-w-6xl mx-auto px-6 py-24 relative z-10">
 
         <div className="text-center mb-16">
-          <h2 className="font-display text-4xl text-white mb-3">Students who reclaimed their day</h2>
-          <p className="font-body text-white/40">Real feedback from people who stopped drowning in to-do lists.</p>
+          <h2 className="font-display text-4xl text-white font-bold mb-3">Engineered for intense academic terms</h2>
+          <p className="font-body text-white/40">From computer science and engineering to pre-med and law.</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {[
             {
-              quote: "I used to end every day feeling like I failed. FlowState showed me I was just planning against an impossible standard.",
+              quote: "I used to end every single Sunday feeling like a failure with 20 overdue tasks. FlowState showed me that my capacity was simply being exceeded. The KEEP/REDUCE/MOVE framework is liberating.",
               name: "Priya S.",
-              role: "Engineering student",
+              role: "Electrical & Computer Eng, Year 3",
+              university: "Berkeley",
               stars: 5,
             },
             {
-              quote: "The KEEP / REDUCE / MOVE framework changed how I think about my workload. It's honest in a way regular planners aren't.",
+              quote: "The physical ESP32 desk companion is genius. Having my timer and current task right next to my monitor without picking up my phone keeps me locked in for two-hour study blocks.",
               name: "Marcus T.",
-              role: "Computer Science, Year 2",
+              role: "Software Engineering, Year 2",
+              university: "Waterloo",
               stars: 5,
             },
             {
-              quote: "I finally stopped rolling tasks for days in a row. The Minimum Viable Day concept is genuinely life-changing during exam season.",
+              quote: "The Minimum Viable Day concept completely altered how I approach exam season. Once the MVD is checked off, I stop feeling guilty and actually get 8 hours of sleep.",
               name: "Aisha K.",
-              role: "Pre-med student",
+              role: "Pre-Med Biology, Senior",
+              university: "Johns Hopkins",
               stars: 5,
             },
-          ].map(({ quote, name, role, stars }) => (
-            <div key={name} className="glass-card p-7 space-y-6 group hover:border-white/15 transition-colors">
-              <div className="flex gap-1">
-                {Array.from({ length: stars }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-primary fill-primary" />
-                ))}
+          ].map(({ quote, name, role, university, stars }) => (
+            <div key={name} className="glass-card p-8 space-y-6 group hover:border-white/20 transition-all border border-white/8 flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex gap-1">
+                  {Array.from({ length: stars }).map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-primary fill-primary" />
+                  ))}
+                </div>
+                <p className="font-body text-white/70 text-sm leading-relaxed italic">"{quote}"</p>
               </div>
-              <p className="font-body text-white/70 text-sm leading-relaxed italic">"{quote}"</p>
-              <div>
+              <div className="pt-4 border-t border-white/5">
                 <p className="font-ui text-white text-sm font-semibold">{name}</p>
-                <p className="font-ui text-white/30 text-xs mt-0.5">{role}</p>
+                <p className="font-ui text-white/40 text-xs mt-0.5">{role} · {university}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── SECTION I: FINAL CTA ── */}
+      {/* ── SECTION I: FAQ ── */}
+      <section className="w-full max-w-6xl mx-auto px-6 py-28 relative z-10 space-y-12">
+        <div className="text-center space-y-4">
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest font-semibold">
+            Common Inquiries
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl text-white font-bold">Frequently asked questions</h2>
+        </div>
+
+        <FaqAccordion />
+      </section>
+
+      {/* ── SECTION J: FINAL CTA ── */}
       <section className="w-full relative z-10 py-32 overflow-hidden">
-        {/* CTA background glow */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[60%] h-[80%] rounded-full bg-primary/10 blur-[120px]" />
+          <div className="w-[60%] h-[80%] rounded-full bg-primary/10 blur-[130px]" />
         </div>
 
         <div className="max-w-4xl mx-auto px-6 text-center space-y-8 relative z-10">
-          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 font-ui text-xs text-white/50 uppercase tracking-widest">
-            Get Started Free
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/30 font-ui text-xs text-primary font-semibold uppercase tracking-widest">
+            Start Your Realistic Semester
           </span>
-          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-white tracking-tight leading-tight">
-            Make today's workload{" "}
-            <span className="italic text-accent">realistic.</span>
+          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl text-white tracking-tight leading-tight font-bold">
+            Plan around{" "}
+            <span className="italic text-accent">who you are</span>{" "}
+            today.
           </h2>
-          <p className="font-body text-white/40 text-lg max-w-2xl mx-auto leading-relaxed">
-            Set up in under 2 minutes. No credit card. No overwhelming features. Just a plan that fits who you are today.
+          <p className="font-body text-white/50 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            Free to start. Ready in 60 seconds. Say goodbye to the endless guilt of yesterday's unfinished to-do list.
           </p>
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/auth/sign-up"
-              className="px-10 py-4 rounded-xl bg-primary hover:bg-primary-hover text-white font-ui font-semibold transition-all glow-primary flex items-center gap-2 text-base group"
+              className="px-10 py-4 rounded-xl bg-primary hover:bg-primary-hover text-white font-ui font-semibold transition-all glow-primary flex items-center gap-2 text-base group cursor-pointer"
             >
-              Build My Day <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              Build My Day Free <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/auth/sign-in"
-              className="px-10 py-4 rounded-xl border border-white/15 text-white font-ui text-base font-medium hover:bg-white/5 transition-colors"
+              className="px-10 py-4 rounded-xl border border-white/15 text-white font-ui text-base font-medium hover:bg-white/5 transition-colors cursor-pointer"
             >
-              Sign In
+              Sign In to Account
             </Link>
           </div>
         </div>
@@ -525,20 +445,21 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
 
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <BrainCircuit className="w-3.5 h-3.5 text-primary" />
+            <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
+              <BrainCircuit className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-ui text-base font-bold text-white/70">FlowState</span>
+            <span className="font-ui text-base font-bold text-white tracking-tight">FlowState</span>
           </div>
 
-          <div className="flex items-center gap-8 font-ui text-sm text-white/30">
+          <div className="flex flex-wrap items-center gap-6 md:gap-8 font-ui text-sm text-white/40">
             <a href="#how-it-works" className="hover:text-white transition-colors">How it Works</a>
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
+            <a href="#features" className="hover:text-white transition-colors">The Framework</a>
+            <a href="#demo" className="hover:text-white transition-colors">Live Demo</a>
             <Link href="/auth/sign-in" className="hover:text-white transition-colors">Sign In</Link>
-            <Link href="/auth/sign-up" className="hover:text-white transition-colors">Get Started</Link>
+            <Link href="/auth/sign-up" className="hover:text-white transition-colors font-medium text-primary">Get Started</Link>
           </div>
 
-          <p className="font-ui text-xs text-white/20">© {new Date().getFullYear()} FlowState. Student Workload Management.</p>
+          <p className="font-ui text-xs text-white/30">© {new Date().getFullYear()} FlowState. Adaptive Workload Management.</p>
         </div>
       </footer>
 

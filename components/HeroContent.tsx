@@ -3,8 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 const HeroContent = () => {
+  const { user } = useAuth();
   return (
     <div className="relative z-10 flex flex-col items-center text-center mt-28 md:mt-36 px-6 max-w-6xl mx-auto">
 
@@ -40,33 +42,62 @@ const HeroContent = () => {
 
       {/* CTA Buttons */}
       <div className="flex flex-col sm:flex-row items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-        <Link
-          href="/auth/sign-up"
-          className="px-8 py-4 rounded-xl bg-primary text-white font-ui text-[15px] font-semibold hover:bg-primary-hover transition-all glow-primary flex items-center gap-2 group"
-        >
-          Build My Day
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </Link>
-        <Link
-          href="/auth/sign-in"
-          className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-ui text-[15px] font-medium hover:bg-white/15 transition-all"
-        >
-          Sign In
-        </Link>
+        {user ? (
+          <>
+            <Link
+              href="/app/dashboard"
+              className="px-8 py-4 rounded-xl bg-primary text-white font-ui text-[15px] font-semibold hover:bg-primary-hover transition-all glow-primary flex items-center gap-2 group"
+            >
+              Go to Dashboard
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/app/tasks"
+              className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-ui text-[15px] font-medium hover:bg-white/15 transition-all"
+            >
+              My Tasks
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/auth/sign-up"
+              className="px-8 py-4 rounded-xl bg-primary text-white font-ui text-[15px] font-semibold hover:bg-primary-hover transition-all glow-primary flex items-center gap-2 group"
+            >
+              Build My Day
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/auth/sign-in"
+              className="px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-ui text-[15px] font-medium hover:bg-white/15 transition-all"
+            >
+              Sign In
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Social proof */}
-      <div className="mt-14 flex items-center gap-6 text-white/30 font-ui text-xs animate-in fade-in duration-700 delay-500">
-        <div className="flex items-center gap-2">
+      <div className="mt-14 flex items-center gap-6 text-white/50 font-ui text-xs animate-in fade-in duration-700 delay-500">
+        <div className="flex items-center gap-2.5">
           <div className="flex -space-x-2">
-            {["bg-purple-400", "bg-indigo-400", "bg-violet-500"].map((c, i) => (
-              <div key={i} className={`w-6 h-6 rounded-full ${c} border-2 border-black/50`} />
+            {[
+              { label: "PS", bg: "from-purple-500 to-indigo-600" },
+              { label: "MT", bg: "from-violet-600 to-fuchsia-600" },
+              { label: "AK", bg: "from-indigo-500 to-violet-800" },
+            ].map((u, i) => (
+              <div
+                key={i}
+                className={`w-7 h-7 rounded-full bg-gradient-to-br ${u.bg} border-2 border-[#080610] flex items-center justify-center text-[10px] font-bold text-white shadow-sm`}
+              >
+                {u.label}
+              </div>
             ))}
           </div>
-          <span>500+ students using FlowState</span>
+          <span className="text-white/70 font-medium">500+ students reclaiming their day</span>
         </div>
-        <span className="hidden sm:block">·</span>
-        <span className="hidden sm:block">Built for exam season & beyond</span>
+        <span className="hidden sm:inline-block text-white/20">·</span>
+        <span className="hidden sm:inline-block text-white/40">Tested during midterm & finals crunch</span>
       </div>
 
     </div>

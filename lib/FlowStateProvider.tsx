@@ -100,15 +100,21 @@ export function FlowStateProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    async function loadAll() {
+    async function loadAll(attempt = 1) {
       setIsLoading(true);
       setError(null);
       try {
         const [loadedTasks, loadedProfile, loadedState, loadedHistory] = await Promise.all([
-          getTasks(),
-          getProfile(user!.id),
-          getTodayState(user!.id),
-          getRecentHistory(user!.id, 50),
+          getTasks().catch(async (err) => {
+            if (err?.message?.includes("future") || err?.message?.includes("JWT")) {
+              await new Promise((res) => setTimeout(res, 1500));
+              return getTasks();
+            }
+            throw err;
+          }),
+          getProfile(user!.id).catch(() => null),
+          getTodayState(user!.id).catch(() => null),
+          getRecentHistory(user!.id, 50).catch(() => []),
         ]);
 
         const userMetaName = user!.user_metadata?.name || user!.user_metadata?.full_name;
@@ -136,7 +142,13 @@ export function FlowStateProvider({ children }: { children: React.ReactNode }) {
         const tasksWithPlan = runEngine(loadedTasks, resolvedState);
         setTasksRaw(tasksWithPlan);
       } catch (e) {
-        setError(`Failed to load your data: ${(e as Error).message}`);
+        const msg = (e as Error).message || "";
+        if ((msg.includes("future") || msg.includes("JWT")) && attempt < 3) {
+          console.warn(`JWT clock skew detected (${msg}), retrying attempt ${attempt + 1}...`);
+          await new Promise((res) => setTimeout(res, 1500));
+          return loadAll(attempt + 1);
+        }
+        setError(`Failed to load your data: ${msg}`);
       } finally {
         setIsLoading(false);
       }

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Task } from "@/types";
+import { BLECompanionWidget } from "@/components/BLECompanionWidget";
 
 export default function Dashboard() {
   const {
@@ -326,21 +327,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* FlowState Device */}
-          <div className="glass-card p-6 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-black/40 border border-white/10 flex items-center justify-center">
-                <Cpu className="w-5 h-5 text-white/40" />
-              </div>
-              <div>
-                <h3 className="font-ui font-medium text-white text-sm">FlowState Device</h3>
-                <p className="text-xs text-white/40 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white/20" /> Not connected
-                </p>
-              </div>
-            </div>
-            <Link href="/app/settings" className="text-xs text-primary hover:underline">Setup</Link>
-          </div>
+          {/* FlowState Companion Display */}
+          <BLECompanionWidget variant="compact" />
 
         </div>
       </div>

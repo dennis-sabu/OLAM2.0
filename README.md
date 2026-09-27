@@ -1,6 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FlowState — Adaptive Student Workload Management
 
-## Getting Started
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://olam-2-0.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20URL-https%3A%2F%2Folam--2--0.vercel.app-blueviolet?style=for-the-badge)](https://olam-2-0.vercel.app)
+
+**Live Production Link:** [https://olam-2-0.vercel.app](https://olam-2-0.vercel.app)
+
+---
+
+## Overview
+
+FlowState is an adaptive workload management platform tailored for university students and engineers. Instead of treating every day with fixed capacity, it adapts daily priorities dynamically based on cognitive energy, sleep quality, and pending deadlines. It features an integrated Web Bluetooth physical desk companion powered by the ESP32.
+
+---
 
 First, run the development server:
 

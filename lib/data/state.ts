@@ -34,18 +34,31 @@ function todayISO(): string {
 }
 
 export async function getTodayState(userId: string): Promise<DailyState | null> {
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("daily_states")
     .select("*")
     .eq("user_id", userId)
     .eq("date", todayISO())
     .single();
 
+  if (error && (error.message?.includes("future") || error.message?.includes("JWT"))) {
+    await new Promise((res) => setTimeout(res, 1500));
+    const retry = await supabase
+      .from("daily_states")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("date", todayISO())
+      .single();
+    data = retry.data;
+    error = retry.error;
+  }
+
   if (error) {
     if (error.code === "PGRST116") return null;
-    throw new Error(`getTodayState: ${error.message}`);
+    console.warn(`getTodayState: ${error.message}`);
+    return null;
   }
-  return rowToDailyState(data as DailyStateRow);
+  return data ? rowToDailyState(data as DailyStateRow) : null;
 }
 
 export async function upsertDailyState(
@@ -68,6 +81,32 @@ export async function upsertDailyState(
   );
 
   if (error) throw new Error(`upsertDailyState: ${error.message}`);
+}
+
+export async function getRecentDailyStates(
+  userId: string,
+  days = 7
+): Promise<{ date: string; energy: number; stress: number; sleep: number; capacity: number }[]> {
+  const { data, error } = await supabase
+    .from("daily_states")
+    .select("date, energy, stress, sleep_hours, capacity_minutes")
+    .eq("user_id", userId)
+    .order("date", { ascending: true })
+    .limit(days);
+
+  if (error) {
+    console.warn(`getRecentDailyStates: ${error.message}`);
+    return [];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return ((data as any[]) || []).map((row) => ({
+    date: row.date,
+    energy: row.energy,
+    stress: row.stress,
+    sleep: Number(row.sleep_hours) || 7,
+    capacity: row.capacity_minutes || 0,
+  }));
 }
 
 // ── Task History ──────────────────────────────────────────────
@@ -103,15 +142,30 @@ function rowToHistory(row: TaskHistoryRow): TaskHistory {
 }
 
 export async function getRecentHistory(userId: string, limit = 50): Promise<TaskHistory[]> {
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("task_history")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(limit);
 
-  if (error) throw new Error(`getRecentHistory: ${error.message}`);
-  return (data as TaskHistoryRow[]).map(rowToHistory);
+  if (error && (error.message?.includes("future") || error.message?.includes("JWT"))) {
+    await new Promise((res) => setTimeout(res, 1500));
+    const retry = await supabase
+      .from("task_history")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    data = retry.data;
+    error = retry.error;
+  }
+
+  if (error) {
+    console.warn(`getRecentHistory: ${error.message}`);
+    return [];
+  }
+  return ((data as TaskHistoryRow[]) || []).map(rowToHistory);
 }
 
 export async function insertHistoryEvent(

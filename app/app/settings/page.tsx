@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { User, Bell, Shield, Smartphone, ChevronRight, Check, Copy, Eye, EyeOff, Cpu, Wifi, RefreshCw } from "lucide-react";
 import { useFlowState } from "@/lib/FlowStateProvider";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { BLECompanionWidget } from "@/components/BLECompanionWidget";
 
 export default function Settings() {
   const { profile, setProfile } = useFlowState();
@@ -27,6 +28,17 @@ export default function Settings() {
     setLocalName(profile.name);
     setLocalFocus(profile.focusArea);
   }, [profile.name, profile.focusArea]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (tabParam) {
+        const found = tabs.find(t => t.toLowerCase() === tabParam.toLowerCase());
+        if (found) setActiveTab(found);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (activeTab === "Devices") {
@@ -105,7 +117,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-12 animate-in fade-in duration-500">
+    <div className="max-w-5xl mx-auto space-y-8 pb-12 animate-in fade-in duration-500">
       
       <header className="space-y-2">
         <h1 className="font-display text-3xl md:text-4xl text-white">Settings</h1>
@@ -138,7 +150,7 @@ export default function Settings() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           
           {activeTab === "Profile" && (
             <div className="glass-card p-6 md:p-8 space-y-8 animate-in slide-in-from-right-4 duration-300">
@@ -245,157 +257,17 @@ export default function Settings() {
           )}
 
           {activeTab === "Devices" && (
-            <div className="glass-card p-6 md:p-8 space-y-8 animate-in slide-in-from-right-4 duration-300">
+            <div className="glass-card p-6 md:p-8 space-y-6 animate-in slide-in-from-right-4 duration-300">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-display text-white mb-1">Hardware Companion</h2>
+                  <h2 className="text-xl font-display text-white mb-1">Physical Desk Companion</h2>
                   <p className="text-sm font-ui text-white/50">
-                    Connect your physical ESP32-S3 desk display to track focus in real-time.
+                    Connect your ESP32-WROOM-32 with GMT028-05 V1.1 ST7789 TFT display directly via Web Bluetooth.
                   </p>
                 </div>
-                <button
-                  onClick={fetchDeviceDetails}
-                  disabled={isTokenLoading}
-                  className="px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-white/70 hover:text-white text-xs font-ui flex items-center gap-1.5 transition-colors self-start sm:self-auto cursor-pointer"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isTokenLoading ? "animate-spin" : ""}`} /> Refresh Status
-                </button>
               </div>
 
-              {/* Status Card */}
-              <div className="p-5 rounded-xl border border-white/10 bg-black/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
-                    <Cpu className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-ui text-white font-medium flex items-center gap-2">
-                      ESP32-S3 Desk Companion
-                      {deviceToken ? (
-                        deviceLastSeen ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-ui px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Connected
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-ui px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-                            Token Active (Waiting for device)
-                          </span>
-                        )
-                      ) : (
-                        <span className="text-[11px] font-ui px-2 py-0.5 rounded-full bg-white/5 text-white/40 border border-white/10">
-                          Disconnected
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-xs font-ui text-white/40 mt-1">
-                      Display: GMT028-05 V1.1 (240×320 ILI9341 SPI)
-                      {deviceLastSeen && ` · Last synced: ${new Date(deviceLastSeen).toLocaleTimeString()}`}
-                    </p>
-                  </div>
-                </div>
-
-                {!deviceToken ? (
-                  <button
-                    onClick={handleGenerateToken}
-                    disabled={isTokenLoading}
-                    className="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-hover text-white text-sm font-ui font-medium transition-colors glow-primary shrink-0 cursor-pointer disabled:opacity-50"
-                  >
-                    Pair Device
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleRevokeToken}
-                    disabled={isTokenLoading}
-                    className="px-4 py-2 rounded-lg border border-red-500/30 text-red-300 hover:bg-red-500/10 text-xs font-ui transition-colors shrink-0 cursor-pointer disabled:opacity-50"
-                  >
-                    Revoke Token
-                  </button>
-                )}
-              </div>
-
-              {/* Device Token Section */}
-              {deviceToken && (
-                <div className="space-y-3 p-5 rounded-xl border border-primary/20 bg-primary/[0.02]">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-ui uppercase font-semibold tracking-wider text-primary">
-                      Device Authentication Token
-                    </label>
-                    <span className="text-xs text-white/40 font-ui">Required in ESP32 firmware</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type={showToken ? "text" : "password"}
-                        value={deviceToken}
-                        readOnly
-                        className="w-full bg-black/60 border border-white/15 rounded-lg px-4 py-2.5 text-white font-mono text-sm focus:outline-none"
-                      />
-                    </div>
-                    <button
-                      onClick={() => setShowToken(!showToken)}
-                      title={showToken ? "Hide token" : "Show token"}
-                      className="p-2.5 rounded-lg border border-white/10 hover:bg-white/5 text-white/60 hover:text-white transition-colors cursor-pointer"
-                    >
-                      {showToken ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                    <button
-                      onClick={handleCopyToken}
-                      title="Copy to clipboard"
-                      className="px-4 py-2.5 rounded-lg bg-primary/20 hover:bg-primary/30 border border-primary/30 text-primary text-sm font-ui flex items-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      {tokenCopied ? (
-                        <>
-                          <Check className="w-4 h-4 text-emerald-400" /> Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4" /> Copy
-                        </>
-                      )}
-                    </button>
-                  </div>
-                  <p className="text-xs text-white/40 font-ui leading-relaxed">
-                    Paste this token into <code className="text-white/70">config.h</code> in the ESP32 firmware. Keep it secret.
-                  </p>
-                </div>
-              )}
-
-              {/* Wiring Guide */}
-              <div className="space-y-4 pt-2">
-                <h3 className="font-ui text-sm font-semibold text-white/90">
-                  Confirmed Hardware Wiring (ESP32-S3 ↔ GMT028-05 V1.1)
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs font-ui">
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/30">
-                    <span className="text-white/40 block">TFT SCK (Clock)</span>
-                    <span className="font-mono text-primary font-bold text-sm">GPIO 12</span>
-                  </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/30">
-                    <span className="text-white/40 block">TFT SDA (MOSI)</span>
-                    <span className="font-mono text-primary font-bold text-sm">GPIO 11</span>
-                  </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/30">
-                    <span className="text-white/40 block">TFT CS (Chip Select)</span>
-                    <span className="font-mono text-primary font-bold text-sm">GPIO 14</span>
-                  </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/30">
-                    <span className="text-white/40 block">TFT DC (Data/Cmd)</span>
-                    <span className="font-mono text-primary font-bold text-sm">GPIO 9</span>
-                  </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/30">
-                    <span className="text-white/40 block">TFT RST (Reset)</span>
-                    <span className="font-mono text-primary font-bold text-sm">GPIO 10</span>
-                  </div>
-                  <div className="p-3 rounded-lg border border-white/10 bg-black/30">
-                    <span className="text-white/40 block">BOOT Button (Action)</span>
-                    <span className="font-mono text-emerald-400 font-bold text-sm">GPIO 0</span>
-                  </div>
-                </div>
-                <p className="text-xs text-white/40 font-ui">
-                  Power: Connect TFT VCC to 3.3V and GND to GND. Backlight is hardwired on the GMT028-05 board.
-                </p>
-              </div>
+              <BLECompanionWidget variant="full" />
             </div>
           )}
 

@@ -1,12 +1,31 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X, BrainCircuit } from "lucide-react";
+import { Menu, X, BrainCircuit, LogOut, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth/AuthProvider";
+import { supabase } from "@/lib/supabase/client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    try {
+      await supabase.auth.signOut();
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      console.error("Sign out error:", err);
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -22,9 +41,13 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`absolute top-0 left-0 w-full z-20 px-6 md:px-[120px] py-[18px] flex items-center justify-between transition-all duration-500 ${
-        scrolled ? "bg-black/40 backdrop-blur-xl border-b border-white/5" : ""
-      }`}
+      className="fixed top-0 left-0 w-full z-20 px-6 md:px-[120px] py-[18px] flex items-center justify-between transition-all duration-500"
+      style={{
+        background: scrolled ? "rgba(6, 4, 9, 0.75)" : "transparent",
+        backdropFilter: scrolled ? "blur(20px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
+        boxShadow: scrolled ? "0 1px 0 rgba(255,255,255,0.05)" : "none",
+      }}
     >
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 group">
@@ -54,18 +77,42 @@ const Navbar = () => {
 
       {/* Desktop Action Buttons */}
       <div className="hidden md:flex items-center gap-3">
-        <Link
-          href="/auth/sign-in"
-          className="px-5 py-2 rounded-lg border border-white/15 bg-white/5 text-white font-ui text-[14px] font-medium hover:bg-white/10 hover:border-white/30 transition-all"
-        >
-          Sign In
-        </Link>
-        <Link
-          href="/auth/sign-up"
-          className="px-5 py-2 rounded-lg bg-primary text-white font-ui text-[14px] font-semibold hover:bg-primary-hover transition-all glow-primary"
-        >
-          Get Started
-        </Link>
+        {loading ? (
+          <div className="h-9 w-40 opacity-0 pointer-events-none" />
+        ) : user ? (
+          <>
+            <Link
+              href="/app/dashboard"
+              className="px-5 py-2 rounded-lg bg-primary text-white font-ui text-[14px] font-semibold hover:bg-primary-hover transition-all glow-primary flex items-center gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Dashboard</span>
+            </Link>
+            <button
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="px-4 py-2 rounded-lg border border-white/15 bg-white/5 text-white/80 hover:text-white font-ui text-[14px] font-medium hover:bg-white/10 hover:border-white/30 transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>{signingOut ? "Signing out..." : "Sign Out"}</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/auth/sign-in"
+              className="px-5 py-2 rounded-lg border border-white/15 bg-white/5 text-white font-ui text-[14px] font-medium hover:bg-white/10 hover:border-white/30 transition-all"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/auth/sign-up"
+              className="px-5 py-2 rounded-lg bg-primary text-white font-ui text-[14px] font-semibold hover:bg-primary-hover transition-all glow-primary"
+            >
+              Get Started
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Mobile Menu Toggle */}
@@ -107,20 +154,46 @@ const Navbar = () => {
           </div>
 
           <div className="flex flex-col gap-3 mt-auto">
-            <Link
-              href="/auth/sign-in"
-              className="w-full py-3.5 rounded-xl border border-white/15 text-white font-ui text-base font-semibold text-center hover:bg-white/5 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/auth/sign-up"
-              className="w-full py-3.5 rounded-xl bg-primary text-white font-ui text-base font-semibold text-center glow-primary"
-              onClick={() => setIsOpen(false)}
-            >
-              Get Started Free
-            </Link>
+            {loading ? null : user ? (
+              <>
+                <Link
+                  href="/app/dashboard"
+                  className="w-full py-3.5 rounded-xl bg-primary text-white font-ui text-base font-semibold text-center glow-primary flex items-center justify-center gap-2"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>Dashboard</span>
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleSignOut();
+                  }}
+                  disabled={signingOut}
+                  className="w-full py-3.5 rounded-xl border border-white/15 text-white/80 hover:text-white font-ui text-base font-semibold text-center hover:bg-white/5 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>{signingOut ? "Signing out..." : "Sign Out"}</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/sign-in"
+                  className="w-full py-3.5 rounded-xl border border-white/15 text-white font-ui text-base font-semibold text-center hover:bg-white/5 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/sign-up"
+                  className="w-full py-3.5 rounded-xl bg-primary text-white font-ui text-base font-semibold text-center glow-primary"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Get Started Free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

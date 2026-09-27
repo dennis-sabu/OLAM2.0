@@ -71,13 +71,24 @@ function taskToRow(task: Omit<Task, "id" | "createdAt">, userId: string): Omit<T
 // ── Queries ───────────────────────────────────────────────────
 
 export async function getTasks(): Promise<Task[]> {
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from("tasks")
     .select("*")
     .order("created_at", { ascending: true });
 
+  if (error && (error.message?.includes("future") || error.message?.includes("JWT"))) {
+    // Clock skew: wait 1.5s and retry once
+    await new Promise((res) => setTimeout(res, 1500));
+    const retry = await supabase
+      .from("tasks")
+      .select("*")
+      .order("created_at", { ascending: true });
+    data = retry.data;
+    error = retry.error;
+  }
+
   if (error) throw new Error(`getTasks: ${error.message}`);
-  return (data as TaskRow[]).map(rowToTask);
+  return ((data as TaskRow[]) || []).map(rowToTask);
 }
 
 export async function createTask(task: Omit<Task, "id" | "createdAt">, userId: string): Promise<Task> {

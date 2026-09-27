@@ -54,6 +54,11 @@ export default function SignUp() {
     try {
       setLoading(true);
 
+      const redirectUrl =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/app/dashboard`
+          : "https://olam-2-0.vercel.app/app/dashboard";
+
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: trimmedEmail,
         password,
@@ -61,6 +66,7 @@ export default function SignUp() {
           data: {
             name: trimmedName,
           },
+          emailRedirectTo: redirectUrl,
         },
       });
 

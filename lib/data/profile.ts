@@ -24,17 +24,29 @@ function rowToProfile(row: ProfileRow): UserProfile {
 }
 
 export async function getProfile(userId: string): Promise<UserProfile | null> {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
 
-  if (error) {
-    if (error.code === "PGRST116") return null; // not found
-    throw new Error(`getProfile: ${error.message}`);
+    if (error) {
+      if (error.code === "PGRST116") return null; // not found
+      if (error.message?.includes("future") || error.message?.includes("JWT")) {
+        // Clock skew: wait 1.5s and retry once
+        await new Promise((res) => setTimeout(res, 1500));
+        const retry = await supabase.from("profiles").select("*").eq("id", userId).single();
+        if (!retry.error && retry.data) return rowToProfile(retry.data as ProfileRow);
+      }
+      console.warn(`getProfile: ${error.message}`);
+      return null;
+    }
+    return rowToProfile(data as ProfileRow);
+  } catch (err) {
+    console.warn("getProfile exception:", err);
+    return null;
   }
-  return rowToProfile(data as ProfileRow);
 }
 
 export async function upsertProfile(userId: string, profile: UserProfile, email?: string): Promise<void> {
