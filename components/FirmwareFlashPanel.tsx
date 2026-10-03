@@ -190,7 +190,6 @@ export function FirmwareFlashPanel() {
 
           {toolReady ? (
             /* esp-web-install-button is a native custom element */
-            // @ts-ignore
             <esp-web-install-button
               ref={(el: HTMLElement | null) => {
                 installBtnRef.current = el;
