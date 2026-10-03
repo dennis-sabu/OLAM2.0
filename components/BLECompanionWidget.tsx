@@ -18,6 +18,7 @@ import { useFlowState } from "@/lib/FlowStateProvider";
 import {
   FLOWSTATE_SERVICE_UUID,
 } from "@/lib/bluetooth/useFlowStateBLE";
+import { FirmwareFlashPanel } from "@/components/FirmwareFlashPanel";
 
 interface BLECompanionWidgetProps {
   variant?: "compact" | "full";
@@ -396,8 +397,8 @@ export function BLECompanionWidget({ variant = "compact" }: BLECompanionWidgetPr
             {[
               {
                 n: 1,
-                title: "Flash your ESP32 with the updated firmware",
-                desc: 'Open FlowState_H1/FlowState_H1.ino in Arduino IDE → Select your ESP32 board → Upload. The TFT screen will show "READY TO PAIR" and show a blue STANDBY badge.',
+                title: "Flash your ESP32 with the FlowState firmware",
+                desc: 'Use the "Flash ESP32" panel below — plug your ESP32 via USB and click Flash. No Arduino IDE needed. The TFT will show "READY TO PAIR" once done.',
               },
               {
                 n: 2,
@@ -437,6 +438,9 @@ export function BLECompanionWidget({ variant = "compact" }: BLECompanionWidgetPr
           </div>
         </div>
       )}
+
+      {/* ── Firmware Flash Panel ── */}
+      <FirmwareFlashPanel />
 
       {/* ── Error box ── */}
       {error && (
