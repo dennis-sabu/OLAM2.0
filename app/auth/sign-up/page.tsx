@@ -54,7 +54,10 @@ export default function SignUp() {
     try {
       setLoading(true);
 
-      const redirectUrl = "https://olam-2-0.vercel.app/app/dashboard";
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        (typeof window !== "undefined" ? window.location.origin : "");
+      const redirectUrl = `${siteUrl}/app/dashboard`;
 
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: trimmedEmail,
